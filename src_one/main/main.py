@@ -15,10 +15,16 @@ import datetime
 #from progressbar import *
 import numpy as np
 import cPickle as pickle
-from src_one.properties import data_path, model_save_path, candidate_path, result_path, thread_num, end_year, end_month, end_day
+from src_one.properties import data_path, model_save_path, candidate_path, result_path, thread_num
 
-# huanghaiyang lalalalala
+lastestUpdateTime = pickle.load(data_path+'lastestUpdateTime')
+print '****'
+print 'lastestUpdateTime : ',lastestUpdateTime
+print '****'
 
+end_day =lastestUpdateTime.day
+end_month = lastestUpdateTime.month
+end_year= lastestUpdateTime.year
 
 model_name = model_save_path+'DNN_model_11_7.h5'
 userCandidate_files_path = candidate_path+'all_userCandidates'

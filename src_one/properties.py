@@ -1,5 +1,7 @@
 import time
-# train database properties (read_data_from_database)
+import datetime
+import cPickle as pickle
+
 trainProtocol = 'mysql'
 trainAccount = 'data_group'
 trainPassword = '#datagroup2'
@@ -21,9 +23,12 @@ slotDatabase = 'brave'
 start_year = 2017
 start_month = 6
 start_day = 1
-end_year = 2017
-end_month = 11
-end_day = 20
+lastestUpdateTime = datetime.datetime.now()- datetime.timedelta(hours=24)
+end_year = lastestUpdateTime.year
+end_month = lastestUpdateTime.month
+end_day = lastestUpdateTime.day
+
+
 
 # data path
 project_path = '/home/leai/brave/'
@@ -33,6 +38,7 @@ model_save_path = project_path+'model_new/'
 result_path = project_path+'result/'
 thread_num = 16
 padding_num = 100
+
 
 # user right ip
 url = 'http://pub-gw.japis.leoao-inc.com/v1/rights/findUserStatus'
