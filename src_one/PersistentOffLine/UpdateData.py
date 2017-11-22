@@ -23,7 +23,7 @@ print 'Update_recordTime : ',lastestUpdateTime
 print '****'
 lastestTimeFile = open(data_path+'lastestUpdateTime','w')
 pickle.dump(lastestUpdateTime,lastestTimeFile)
-
+lastestTimeFile.close()
 def updatePersistentData():
     print 'Start update user candidates....'
     multiProcess_BuildCandidates()

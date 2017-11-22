@@ -43,11 +43,5 @@ padding_num = 100
 # user right ip
 url = 'http://pub-gw.japis.leoao-inc.com/v1/rights/findUserStatus'
 
-def get_now_date():
-    global end_year, end_month, end_day
-    now_date = time.localtime()
-    end_year = now_date.tm_year
-    end_month = now_date.tm_mon
-    end_day = now_date.tm_mday
 
 

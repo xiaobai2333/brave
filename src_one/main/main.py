@@ -17,11 +17,12 @@ import numpy as np
 import cPickle as pickle
 from src_one.properties import data_path, model_save_path, candidate_path, result_path, thread_num
 
-lastestUpdateTime = pickle.load(data_path+'lastestUpdateTime')
+file_date = open(data_path+'lastestUpdateTime')
+lastestUpdateTime = pickle.load(file_date)
 print '****'
 print 'lastestUpdateTime : ',lastestUpdateTime
 print '****'
-
+file_date.close()
 end_day =lastestUpdateTime.day
 end_month = lastestUpdateTime.month
 end_year= lastestUpdateTime.year
