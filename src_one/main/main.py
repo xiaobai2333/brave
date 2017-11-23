@@ -3,6 +3,8 @@ import sys
 sys.path.append('/home/leai/brave')
 from src_one.filter import Collaborative_Filter
 from src_one.filter import ReadData
+
+import logging
 from src_one.filter.filter import  get_apriori_rulse, get_hour_store_Canditate, \
     get_Class_Candidate, ishourStoreInCandidate, isClassInCandidate
 from src_one.score.single_scroe import merge_data, get_score
@@ -17,11 +19,26 @@ import numpy as np
 import cPickle as pickle
 from src_one.properties import data_path, model_save_path, candidate_path, result_path, thread_num
 
+def init_log():
+    log_format = '[%(asctime)s][%(levelname)s][file:%(filename)s][line:%(lineno)s] %(message)s'
+    logging.basicConfig(level=logging.DEBUG,
+                        format=log_format,
+                        filename=data_path+'log/predict.log',
+                        filemode='w')
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    console.setFormatter(logging.Formatter(log_format))
+    logging.getLogger('').addHandler(console)
+
+init_log()
+
+
+
 file_date = open(data_path+'lastestUpdateTime')
 lastestUpdateTime = pickle.load(file_date)
-print '****'
-print 'lastestUpdateTime : ',lastestUpdateTime
-print '****'
+logging.info('****')
+logging.info('lastestUpdateTime : '+str(lastestUpdateTime))
+logging.info('****')
 file_date.close()
 end_day =lastestUpdateTime.day
 end_month = lastestUpdateTime.month
@@ -67,15 +84,10 @@ length = int(np.math.ceil(all_len*1.0/thread_num))
 
 
 def predict_candidate_score(index,slots, candidates):
-    print 'process ', index, 'start....'
+    logging.info('process '+str(index)+ 'start....')
     start = time.clock()
     model = load_model(model_name)
-    # print 'coaches number: ', len(coach_id_list)
-    # print len(schedules_list)
-    # print 'users number: ', len(user_list)
 
-    # pbar = ProgressBar().start()
-    # print index, 'start...', ' user num: ', end - index*length
     if index == thread_num-1:
         end = all_len
     else:
@@ -89,11 +101,9 @@ def predict_candidate_score(index,slots, candidates):
     time_filter = 0
     time_predict = 0
     for user_id in subUserList:
-        # print 'Process ' , index, 'dealing..' ,user_id
         stime = time.clock()
         hour_candidate , store_candidate = get_hour_store_Canditate(historyStarttime, user_id, appoint_queue)
         classId_candidate = userCandidates[user_id]
-        # print 'user_id  : ',user_id,'   ', classId_candidate
         etime =time.clock()
         time_filter += etime-stime
         for slot_id in slotIDs:
@@ -118,18 +128,16 @@ def predict_candidate_score(index,slots, candidates):
                     else:
 
                         slot_Score[slot_id][candidateid] = singleScore[0][0]
-                        # print 'singleScore: ', singleScore
         etime2 = time.clock()
         time_predict += etime2 - etime
-        # print 'user ', user_id, ' time1: ', etime - stime,'  time2 : ',etime2 - etime
-        print "Process ", index, ' : ', i, ' / ', subLen
+        logging.info('Process  {index} :  {i} / {subLen}'.format(index=index,i=i,subLen=subLen))
         i +=1
-    print 'Process',index,'  === ','filterTime : ',time_filter,'   predictTime : ',time_predict
+    logging.info('Process'+str(index)+'  ===  filterTime : '+str(time_filter)+'   predictTime : '+str(time_predict))
     file_score = open(result_path + 'sch_score_sorted'+str(index), 'w')
     pickle.dump(slot_Score, file_score)
     file_score.close()
     end = time.clock()
-    print 'process*', index, ' end....', 'use time: ', end-start
+    logging.info('process*'+str(index)+ ' end....', 'use time: '+str(end-start))
 
 
 def process_predict():
@@ -145,23 +153,23 @@ def process_predict():
     for i in range(thread_num):
         process_list[i].join()
 
-    print 'main process end....'
+    logging.info('main process end....')
 
 
 def main():
     start = time.clock()
-    print 'start.....'
+    logging.info('start.....')
     process_predict()
-    print '=================='
-    print 'end......'
-    print 'merge start...'
+    logging.info('==================')
+    logging.info('end......')
+    logging.info('merge start...')
     sch_score = merge_result()
-    print 'merge over....'
+    logging.info('merge over....')
     end = time.clock()
-    print 'use time: ', end-start
-    print 'write back database...'
+    logging.info('use time: '+str(end-start))
+    logging.info('write back database...')
     writeback_databse(sch_score)
-    print 'write success...'
+    logging.info('write success...')
 
 
 def merge_result():
@@ -169,9 +177,7 @@ def merge_result():
     for i in range(thread_num):
         result_file = open(result_path+'sch_score_sorted'+str(i), 'r')
         sch_score = pickle.load(result_file)
-       # print len(sch_score)
         result_file.close()
-        # result_map.update(sch_score)
         for slot_id in sch_score:
             if not result_map.has_key(slot_id):
                 result_map[slot_id] = {}
@@ -180,13 +186,12 @@ def merge_result():
                     result_map[slot_id][candidate_id]=sch_score[slot_id][candidate_id]
                 else:
                     result_map[slot_id][candidate_id] += sch_score[slot_id][candidate_id]
-    print 'all : ', len(result_map)
+    logging.info('all : '+str(len(result_map)))
     for slot_id in result_map:
-        print ' slot id : ', slot_id, '============================='
+        logging.info(' slot id : {slot_id}============================='.format(slot_id=slot_id))
         for candidate_id in result_map[slot_id]:
-            print 'candidate_id: ', candidate_id
-            print 'score: ', result_map[slot_id][candidate_id]
-            print '-------'
+            logging.info('candidate_id: {candidate_id}, score: {score}'.format(candidate_id=candidate_id,score=result_map[slot_id][candidate_id]))
+            logging.info('-------')
     all_result_file = open(result_path+'all_result', 'w')
     pickle.dump(result_map, all_result_file)
     all_result_file.close()

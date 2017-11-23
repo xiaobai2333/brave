@@ -1,3 +1,5 @@
+import logging
+
 import sqlalchemy
 from new_database import Slot, Candidate, Course
 import cPickle as pickle
@@ -94,9 +96,9 @@ def writeback_databse(sch_score):
     for slot_id in sch_score:
         for candicate_id in sch_score[slot_id]:
             query.filter(Candidate.id==candicate_id).update({Candidate.score: sch_score[slot_id][candicate_id]})
-        print 'process: ', i, '/', length
+        logging.info('process: {i}/ {length}'.format(i=i,length=length))
         i += 1
-    print 'write back database success....'
+    logging.info('write back database success....')
     session.close()
 
 

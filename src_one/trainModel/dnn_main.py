@@ -1,4 +1,7 @@
 from __future__ import division
+
+import logging
+
 import src_one.trainModel.dnn_classifier as dc
 import numpy as np
 from keras.models import load_model
@@ -84,10 +87,10 @@ def train_model():
     x_data = np.load(data_path+first_type_data_name)
     arr_num = x_data.shape[0]
     train_data, train_label, test_data, test_label = train_test_split(x_data, arr_num)
-    print 'train_data :', train_data.shape
-    print 'train_label :', train_label.shape
-    print 'test_data :', test_data.shape
-    print 'test_label :', test_label.shape
+    logging.info( 'train_data :'+str(train_data.shape))
+    logging.info( 'train_label :'+str(train_label.shap))
+    logging.info( 'test_data :'+str(test_data.shape))
+    logging.info('test_label :'+str(test_label.shape))
     # ==========================================================================================
     model = dc.build_model()
     model = dc.compile_model(model, 0.01, 0.9, 1e-6)
@@ -153,15 +156,15 @@ def predict():
                 n_1_0 += 1
 
     P = right*1.0/y_pred.shape[0]
-    print 'acc: ', P
-    print 'real 1, pred 1 : ', n_1_1
-    print 'real 1, pred 0 : ', n_1_0
-    print 'real 0, pred 1 : ', n_0_1
-    print 'real 0, pred 0 : ', n_0_0
-    print 'chazhunlv1: ', n_1_1*1.0/(n_1_1+n_1_0)
-    print 'chazhunlv0: ', n_0_0*1.0/(n_0_1+n_0_0)
-    print 'zhaohuilv1: ', n_1_1*1.0/(n_1_1+n_0_1)
-    print 'zhaohuilv0: ', n_0_0*1.0/(n_1_0+n_0_0)
+    logging.info('acc: '+str(P))
+    logging.info('real 1, pred 1 : '+str(n_1_1))
+    logging.info('real 1, pred 0 : '+str(n_1_0))
+    logging.info('real 0, pred 1 : '+str( n_0_1))
+    logging.info('real 0, pred 0 : '+ str(n_0_0))
+    logging.info('chazhunlv1: '+ str(n_1_1*1.0/(n_1_1+n_1_0)))
+    logging.info('chazhunlv0: '+ str(n_0_0*1.0/(n_0_1+n_0_0)))
+    logging.info('zhaohuilv1: '+ str(n_1_1*1.0/(n_1_1+n_0_1)))
+    logging.info('zhaohuilv0: '+ str(n_0_0*1.0/(n_1_0+n_0_0)))
     # pred = np.argmax(y_pred, axis=-1)
     g_0 = 0
     g_0_r = 0

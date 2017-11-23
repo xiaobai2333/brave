@@ -5,7 +5,7 @@ import datetime
 import multiprocessing
 import numpy as np
 import cPickle as pickle
-
+import logging
 from src_one.filter import Collaborative_Filter
 from src_one.filter import ReadData
 from src_one.filter.filter import get_apriori_rulse, get_Class_Candidate
@@ -18,14 +18,14 @@ all_user_file.close()
 
 user_list = list(user_list)
 all_len = len(user_list)
-print 'all data length: ', all_len
+logging.info( 'all data length: '+str(all_len) )
 length = int(np.math.ceil(all_len*1.0/thread_num))
 historyStarttime = (datetime.datetime(end_year, end_month, end_day) -datetime.datetime(1970, 1, 1)- datetime.timedelta(hours=8)).total_seconds()
 appoint_queue, user, coach, schedule = load_data()
 
 
 def storeClassCandidates(index):
-    print 'dealCanditates process ', index, '  start....'
+    logging.info( 'dealCanditates process '+str(index)+'  start....')
     start = time.clock()
 
     if index == thread_num-1:
@@ -46,15 +46,16 @@ def storeClassCandidates(index):
         classId_candidate = get_Class_Candidate(user_id, historyStarttime, appoint_queue, apriori_rules, userDict, itemUser)
         userCandidatesMap[user_id] = classId_candidate
         etime =time.clock()
-        print "dealCandidates Process ", index, ' : ', i, ' / ', subLen,'  cost: ',etime-stime,' s'
+        log =  'dealCandidates Process {index} :  {i}/ {subLen}   cost: {time}'.format(index=index,i=i,subLen=subLen,time=etime-stime)
+        logging.info(log)
         i +=1
 
     resultFile = open(candidate_path + 'userCandidatesMap'+str(index), 'w')
     pickle.dump(userCandidatesMap, resultFile)
     resultFile.close()
     end = time.clock()
-
-    print 'process*', index, ' end....', 'use time: ', end-start
+    log2 = 'process  {index}  end.... use time:  {time} '.format(index=index,time=end-start)
+    logging.info(log2)
 
 
 def merge_result():
@@ -62,12 +63,11 @@ def merge_result():
     for i in range(thread_num):
         result_file = open(candidate_path+'userCandidatesMap'+str(i), 'r')
         subUserCandidatesMap = pickle.load(result_file)
-        print 'sub ',i,' :',len(subUserCandidatesMap)
+        logging.info('sub {i} : {len}'.format(i=i,len=len(subUserCandidatesMap)))
         result_file.close()
         for user_id in subUserCandidatesMap:
                 userCandidatesMap[user_id]=subUserCandidatesMap[user_id]
-
-    print 'all : ', len(userCandidatesMap)
+    logging.info('all  : {len}'.format( len=len(userCandidatesMap)))
 
     all_result_file = open(candidate_path+'all_userCandidates', 'w')
     pickle.dump(userCandidatesMap, all_result_file)
@@ -88,7 +88,7 @@ def multiProcess_BuildCandidates():
 
     merge_result()
 
-    print 'multiProcess_BuildCandidates process end....'
+    logging.info('multiProcess_BuildCandidates process end....')
 
 
 
