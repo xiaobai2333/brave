@@ -130,14 +130,15 @@ def predict_candidate_score(index,slots, candidates):
                         slot_Score[slot_id][candidateid] = singleScore[0][0]
         etime2 = time.clock()
         time_predict += etime2 - etime
-        logging.info('Process  {index} :  {i} / {subLen}'.format(index=index,i=i,subLen=subLen))
+        if i%100 == 0:
+            logging.info('Process  {index} :  {i} / {subLen}'.format(index=index,i=i,subLen=subLen))
         i +=1
     logging.info('Process'+str(index)+'  ===  filterTime : '+str(time_filter)+'   predictTime : '+str(time_predict))
     file_score = open(result_path + 'sch_score_sorted'+str(index), 'w')
     pickle.dump(slot_Score, file_score)
     file_score.close()
     end = time.clock()
-    logging.info('process*'+str(index)+ ' end....', 'use time: '+str(end-start))
+    logging.info('process*'+str(index)+ ' end....'+'use time: '+str(end-start))
 
 
 def process_predict():
