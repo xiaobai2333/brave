@@ -1,15 +1,26 @@
 import sys
 sys.path.append('/home/leai/brave')
+import logging
+def init_log():
+    log_format = '[%(asctime)s][%(levelname)s][file:%(filename)s][line:%(lineno)s] %(message)s'
+    logging.basicConfig(level=logging.DEBUG,
+                        format=log_format,
+                        filename='merida_update.log',
+                        filemode='w')
+    console = logging.StreamHandler()
+    console.setLevel(logging.INFO)
+    console.setFormatter(logging.Formatter(log_format))
+    logging.getLogger('').addHandler(console)
 
-
+init_log()
 import cPickle as pickle
 from src_one.properties import data_path, lastestUpdateTime
 from src_one.readDataFromDatabase.read_data_from_database import read_data_from_database
 from src_one.predata.pre_train_data import get_first_data
 
-print 'Start update data, please wait....'
+logging.info('Start update data, please wait....')
 read_data_from_database()
-print 'Start merge data to train data type....'
+logging.info('Start merge data to train data type....')
 get_first_data()
 print 'Merge data to train data success...'
     
