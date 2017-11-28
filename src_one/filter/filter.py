@@ -1,3 +1,4 @@
+import random
 import time
 
 import datetime
@@ -70,3 +71,18 @@ def ishourStoreInCandidate(sche_time,storeId,hour_candidate,store_candidate):
     # if not sche_hour in hour_candidate:
     #     return False
     return True
+
+def ishourStoreInCandidateProbabilities(sche_time,storeId,hour_candidate,store_candidate):
+    if not storeId in store_candidate:
+        return False
+    sche_hour = datetime.datetime.fromtimestamp(sche_time).hour
+    rand=random.random()
+    print hour_candidate
+    if not sche_hour in hour_candidate:
+        if rand <= 1.0/45:
+            return True
+    else:
+        P = 1.0* (hour_candidate.count(sche_hour)+1 )/45
+        if rand <= P:
+            return True
+    return False

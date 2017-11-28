@@ -6,7 +6,7 @@ from src_one.filter import ReadData
 
 import logging
 from src_one.filter.filter import  get_apriori_rulse, get_hour_store_Canditate, \
-    get_Class_Candidate, ishourStoreInCandidate, isClassInCandidate
+    get_Class_Candidate, ishourStoreInCandidate, isClassInCandidate, ishourStoreInCandidateProbabilities
 from src_one.score.single_scroe import merge_data, get_score
 from src_one.predata.preschedule import load_data,  get_candidate_schedules
 from src_one.readDataFromDatabase.read_data_for_predict import writeback_databse, read_data_for_predict
@@ -110,7 +110,7 @@ def predict_candidate_score(index,slots, candidates):
             sch_t = slots[slot_id][0]
             storeId = slots[slot_id][1]
 
-            if not ishourStoreInCandidate(sch_t,storeId ,  hour_candidate,store_candidate):
+            if not ishourStoreInCandidateProbabilities(sch_t,storeId ,  hour_candidate,store_candidate):
                 continue
 
             schedules_list = get_candidate_schedules(candidates, slot_id, sch_t, storeId)
