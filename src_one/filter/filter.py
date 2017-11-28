@@ -66,7 +66,7 @@ def isClassInCandidate(sche,classId_candidate):
 def ishourStoreInCandidate(sche_time,storeId,hour_candidate,store_candidate):
     if not storeId in store_candidate:
         return False
-    sche_hour = datetime.datetime.fromtimestamp(sche_time).hour
-    if not sche_hour in hour_candidate:
-        return False
+    # sche_hour = datetime.datetime.fromtimestamp(sche_time).hour
+    # if not sche_hour in hour_candidate:
+    #     return False
     return True

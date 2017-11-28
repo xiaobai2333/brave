@@ -126,12 +126,11 @@ def predict_candidate_score(index,slots, candidates):
                     if slot_Score[slot_id].has_key(candidateid):
                         slot_Score[slot_id][candidateid] += singleScore[0][0]
                     else:
-
                         slot_Score[slot_id][candidateid] = singleScore[0][0]
         etime2 = time.clock()
         time_predict += etime2 - etime
         if i%100 == 0:
-            logging.info('Process  {index} :  {i} / {subLen}'.format(index=index,i=i,subLen=subLen))
+            logging.info('Process  {index} :  {i} / {subLen}'.format(index=index, i=i, subLen=subLen))
         i +=1
     logging.info('Process'+str(index)+'  ===  filterTime : '+str(time_filter)+'   predictTime : '+str(time_predict))
     file_score = open(result_path + 'sch_score_sorted'+str(index), 'w')
