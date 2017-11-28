@@ -40,3 +40,5 @@ def get_candidate_schedules(candidates, slot_id, sch_t, storeId):
         candidate_id = candidate[2]
         schedules.append([class_id, storeId, sch_t, coach_id, candidate_id])
     return schedules
+
+

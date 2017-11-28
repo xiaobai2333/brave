@@ -24,6 +24,7 @@ start_year = 2017
 start_month = 6
 start_day = 1
 lastestUpdateTime = datetime.datetime.now()- datetime.timedelta(hours=24)
+lastestUpdateUnix = int(time.time())-24*60*60
 end_year = lastestUpdateTime.year
 end_month = lastestUpdateTime.month
 end_day = lastestUpdateTime.day
