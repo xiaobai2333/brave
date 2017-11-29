@@ -37,14 +37,11 @@ def get_history_class_Candidate(lastestTime,userID,appointMap):
 
 def get_apriori_classID_Candidate(apriori_rules,history_classID):
     # apriori_rules = apriori_classID(lastestTime, appointMap, 0.1, 0.6)
-    apriori_recom={}
+    apriori_recom=[]
     for rule in apriori_rules:
         if rule[0].issubset(history_classID):
             if not rule[1].issubset(history_classID):
-                # apriori_recom.update(rule[1])
-                if not apriori_recom.has_key(rule[1]):
-                    apriori_recom[rule[1]] = []
-                apriori_recom[rule[1]].append((rule[0],rule[2]))
+                apriori_recom.append(rule)
     return apriori_recom
 
 def get_col_class_Candidate(history_classID,userID,userDict,itemUser):
