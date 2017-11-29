@@ -94,7 +94,7 @@ def get_appoint_map(courses):
                                              Appoint.end_time <= datetime_to_timestamp(
                                                   datetime.datetime(end_year, end_month, end_day))).all()
     num = len(schedule)
-    print(num)
+    print('all appoint schedule number: ', num)
     sch_map = {}
     for sch in schedule:
         if not sch_map.has_key(sch.user_id):
@@ -118,6 +118,7 @@ def get_appoint_map_class(start_month, start_day, end_month, end_day):
                                                  datetime.datetime(2017, start_month, start_day)),
                                              Appoint.end_time <= datetime_to_timestamp(
                                                   datetime.datetime(2017, end_month, end_day))).all()
+    session.close()
     num = len(schedule)
     print(num)
     sch_map = {}

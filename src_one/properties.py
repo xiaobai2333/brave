@@ -21,7 +21,7 @@ slotDatabase = 'brave'
 
 # train data time block (read_data_from_database)
 start_year = 2017
-start_month = 6
+start_month = 7
 start_day = 1
 lastestUpdateTime = datetime.datetime.now()- datetime.timedelta(hours=24)
 lastestUpdateUnix = int(time.time())-24*60*60
@@ -32,7 +32,7 @@ end_day = lastestUpdateTime.day
 
 
 # data path
-project_path = 'C:/Users/wjy/Desktop/leai/brave/'
+project_path = '/home/leai/brave/'
 data_path = project_path+'data/'
 candidate_path = project_path+'userClassCandidates/'
 model_save_path = project_path+'model_new/'
