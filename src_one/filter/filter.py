@@ -79,10 +79,10 @@ def ishourStoreInCandidateProbabilities(sche_time,storeId,hour_candidate,store_c
     rand=random.random()
     print hour_candidate
     if not sche_hour in hour_candidate:
-        if rand <= 1.0/45:
+        if rand <= 1.0/30:
             return True
     else:
-        P = 1.0* (hour_candidate.count(sche_hour)+1 )/45
+        P = 1.0* (hour_candidate.count(sche_hour)+1 )/30
         if rand <= P:
             return True
     return False
