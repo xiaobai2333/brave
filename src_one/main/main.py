@@ -58,6 +58,11 @@ userCandidates = pickle.load(userCandidates_file)
 userCandidates_file.close()
 appoint_queue, user, coach, schedule = load_data()
 historyStarttime = (datetime.datetime(end_year, end_month, end_day) -datetime.datetime(1970, 1, 1)- datetime.timedelta(hours=8)).total_seconds()
+user_history_bynow_file = open(data_path+'user_history_by_now', 'r')
+user_history_bynow = pickle.load(user_history_bynow_file)
+user_history_bynow_file.close()
+
+
 # class_id_list = [x for x in range(45)]
 #right_file1 = open(data_path + 'user_right', 'r')
 #user_right_list = pickle.load(right_file1)
@@ -102,26 +107,24 @@ def predict_candidate_score(index,slots, candidates):
     time_predict = 0
     for user_id in subUserList:
         stime = time.clock()
-        hour_candidate , store_candidate = get_hour_store_Canditate(historyStarttime, user_id, appoint_queue)
+        hour_candidate, store_candidate = get_hour_store_Canditate(historyStarttime, user_id, appoint_queue)
         classId_candidate = userCandidates[user_id]
         etime =time.clock()
         time_filter += etime-stime
+        user_history = user_history_bynow[user_id]
         for slot_id in slotIDs:
             sch_t = slots[slot_id][0]
             storeId = slots[slot_id][1]
-
             if not ishourStoreInCandidateProbabilities(sch_t,storeId ,  hour_candidate,store_candidate):
                 continue
-
             schedules_list = get_candidate_schedules(candidates, slot_id, sch_t, storeId)
             if not slot_Score.has_key(slot_id):
                 slot_Score[slot_id] = {}
-
             for schedule1 in schedules_list:
                 sch = schedule1[:4]
                 candidateid = schedule1[4]
                 if isClassInCandidate(sch, classId_candidate):
-                    data = merge_data(sch, user_id, appoint_queue, user, coach, schedule)
+                    data = merge_data(sch, user_history)
                     singleScore = get_score(model, data)
                     if slot_Score[slot_id].has_key(candidateid):
                         slot_Score[slot_id][candidateid] += singleScore[0][0]
@@ -223,7 +226,7 @@ def see_result():
                         print 'score : ',subResult[slot_id][candidateid]
 
                 print '******'
-                print 'sum : ' , all_result[slot_id][candidateid]
+                print 'sum : ', all_result[slot_id][candidateid]
                 print '++++++++++++++++++++++'
         else:
             name.append(slot_id)

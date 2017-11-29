@@ -18,7 +18,7 @@ def get_user_right(user):
     # user_file = open(user_map_id, 'r')
     # user = pickle.load(user_file)
     user_right = {}
-    usersReal = []
+    usersReal = set()
     i = 0
     for user_id in user:
         if i % 1000 == 0:
@@ -26,10 +26,11 @@ def get_user_right(user):
         i += 1
         j = get_user_rights_web(user_id)
         if 2 in j:
-            usersReal.append(user_id)
+            usersReal.add(user_id)
        # user_right[user_id] = j
     file1 = open(data_path+'all_userid', 'w')
     pickle.dump(usersReal, file1)
     file1.close()
+    return usersReal
    # return user_right
 

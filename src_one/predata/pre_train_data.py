@@ -344,8 +344,17 @@ def get_first_data():
     print 'all coaches number: ', len(all_coaches)
     np.save(data_path+'first_type_data.npy', first_data)
     print 'get user right from web...'
-    get_user_right(all_users)
+    userReal = get_user_right(all_users)
     print 'get user right success...'
+    print 'get user history by now start...'
+    user_history_bynow = {}
+    for uId in userReal:
+        uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
+        user_history_bynow[uId]=uHis
+    user_history_bynow_file = open(data_path+'user_history_by_now', 'w')
+    pickle.dump(user_history_bynow, user_history_bynow_file)
+    user_history_bynow_file.close()
+    print 'get user history by now ...'
 
 
 def get_user_history_bynow(userId, appointMap, user, coach, schedule):
@@ -443,6 +452,8 @@ def get_user_history_bynow(userId, appointMap, user, coach, schedule):
     user_history_bynow.append(user_hour_weight)
     user_history_bynow.append(user_week_history)
     user_history_bynow.append(user_week_weight)
+    user_history_bynow.append(weekdayP)
+    user_history_bynow.append(hourP)
     return user_history_bynow
 
 
