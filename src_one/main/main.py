@@ -125,10 +125,10 @@ def predict_candidate_score(index,slots, candidates):
                     singleScore = get_score(model, data)
                     if slot_Score[slot_id].has_key(candidateid):
                         slot_Score[slot_id][candidateid] += singleScore[0][0]
-                        # slot_Score[slot_id][candidateid] += 1
+                       # slot_Score[slot_id][candidateid] += 1
                     else:
                         slot_Score[slot_id][candidateid] = singleScore[0][0]
-                        # slot_Score[slot_id][candidateid] = 1
+                       # slot_Score[slot_id][candidateid] = 1
         etime2 = time.clock()
         time_predict += etime2 - etime
         if i%100 == 0:
