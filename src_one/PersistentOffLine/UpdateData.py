@@ -40,7 +40,7 @@ pickle.dump(lastestUpdateTime,lastestTimeFile)
 lastestTimeFile.close()
 def updatePersistentData():
     logging.info( 'Start update user candidates....')
-    #multiProcess_BuildCandidates()
+    multiProcess_BuildCandidates()
     logging.info('Update user candidates success...')
     logging.info('Start train new model...')
     train_model()
