@@ -3,3 +3,5 @@ result/
 model_new/
 userClassCandidates/
 .idea/
+src_one/properties.py
+data/log/

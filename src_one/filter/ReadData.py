@@ -4,9 +4,10 @@ import cPickle as pickle
 import time
 import datetime
 import Apriori
+from src_one.properties import data_path
 from src_one.predata.dealOriginData import sort_trainData
-appoint_queue_map_path = '/home/hhy/PycharmProjects/brave/data_11_7/appoint_queue_map'
 
+appoint_queue_map_path = data_path+'appoint_queue_map'
 
 def readAppointMap():
     file = open(appoint_queue_map_path,'r')

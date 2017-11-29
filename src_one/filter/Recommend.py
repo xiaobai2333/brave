@@ -32,7 +32,7 @@ def Collabrorative_classID(userID,userDict,itemUser):
 
     return result
 
-def getClassIDofCandidate(lastestTime,userID,appointMap):
+def getCandidate(lastestTime,userID,appointMap):
     history_classID = get_his_classID(lastestTime,userID,appointMap)
 
     if len(history_classID)==0:
@@ -45,7 +45,9 @@ def getClassIDofCandidate(lastestTime,userID,appointMap):
             if not rule[1].issubset(history_classID):
                 apriori_recom.update(rule[1])
 
-    Col_result = Collabrorative_classID(lastestTime,userID,appointMap)
+    userDict = ReadData.get_recent_user_classId_Dict(lastestTime, appointMap)
+    itemUser = Collaborative_Filter.getItemUserMap(userDict)
+    Col_result = Collabrorative_classID(userID, userDict, itemUser)
 
     Col_recom_result = set()
     for item in Col_result:
@@ -104,7 +106,7 @@ def test():
     for userID in appointMap:
         lastestTime = ReadData.get_user_lastest_time(userID,appointMap)
         print userID , '========================='
-        history_classID ,col_recom,apriori_recom = getClassIDofCandidate(lastestTime,userID,appointMap)
+        history_classID ,col_recom,apriori_recom = getCandidate(lastestTime,userID,appointMap)
         print 'history : ' , history_classID
         print 'col_recom  : ',col_recom
         print 'apriori_recom : ',apriori_recom

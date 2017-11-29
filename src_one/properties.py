@@ -32,7 +32,7 @@ end_day = lastestUpdateTime.day
 
 
 # data path
-project_path = '/home/leai/brave/'
+project_path = 'C:/Users/wjy/Desktop/leai/brave/'
 data_path = project_path+'data/'
 candidate_path = project_path+'userClassCandidates/'
 model_save_path = project_path+'model_new/'

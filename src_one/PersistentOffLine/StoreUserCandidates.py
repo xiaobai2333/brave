@@ -43,7 +43,7 @@ def storeClassCandidates(index):
     userCandidatesMap = {}
     for user_id in subUserList:
         stime = time.clock()
-        classId_candidate = get_Class_Candidate(user_id, historyStarttime, appoint_queue, apriori_rules, userDict, itemUser)
+        classId_candidate = get_Class_Candidate(user_id, apriori_rules, userDict, itemUser)
         userCandidatesMap[user_id] = classId_candidate
         etime =time.clock()
         log =  'dealCandidates Process {index} :  {i}/ {subLen}   cost: {time}'.format(index=index,i=i,subLen=subLen,time=etime-stime)

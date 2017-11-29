@@ -98,6 +98,7 @@ def test():
         print 'userID : ',user
         print 'his classID : ',userDict[user]
         print recommendByUserFC(userDict, itemUser, user, 8)
+        print '=========================================='
 
 
 # 从这里开始运行
