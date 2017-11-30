@@ -15,7 +15,7 @@ def get_Class_Candidate(userID,apriori_rules,userDict,itemUser):
     history_classID = userDict[userID]
     history_classID_set = set(history_classID.keys())
     if len(history_classID) ==0:
-        return history_classID
+        return []
     col_recom = get_col_class_Candidate(history_classID_set,userID,userDict,itemUser)
 
     apriori_recom = get_apriori_classID_Candidate(apriori_rules,history_classID_set)
@@ -58,11 +58,31 @@ def get_col_class_Candidate(history_classID,userID,userDict,itemUser):
 
 def isClassInCandidate(sche,classId_candidate):
     class_id = sche[0]
-
-    if not class_id in classId_candidate:
+    if len(classId_candidate)==0:
         return False
 
-    return True
+    rand = random.random()
+    history_sum = sum(classId_candidate[0].values())
+    if  class_id in classId_candidate[0]:
+        P =   classId_candidate[0][class_id] *1.0 / history_sum
+        if rand<=P:
+            return True
+
+    if class_id in classId_candidate[1]:
+        if rand<=0.2:
+            return True
+
+    P = 0
+    for rule in classId_candidate[2]:
+        if class_id in rule[1]:
+            for aprioi_class in rule[0]:
+                if P < classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]:
+                    P = classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]
+
+    if rand <=P:
+        return True
+
+    return False
 
 def ishourStoreInCandidate(sche_time,storeId,hour_candidate,store_candidate):
     if not storeId in store_candidate:
