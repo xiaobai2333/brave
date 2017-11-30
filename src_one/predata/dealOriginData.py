@@ -239,7 +239,7 @@ def get_weekdayP(userId,time,appiont_que_map):
     result_y = [0,0,0,0,0,0,0]
     start = time - 60 * 60 * 24 * 30
     for list in appiont_que_map[userId]:
-        if list[2] >= start:
+        if list[2] > start:
             if list[2] < time:
                 if list[-1] == 8 or list[-1] == 9:
                     result_q[datetime.datetime.fromtimestamp(list[2]).weekday()] += 1
@@ -263,9 +263,9 @@ def get_hourP(userId, time, appiont_que_map):
     result_y = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     start = time-60*60*24*30
     for list in appiont_que_map[userId]:
-        if list[2] >= start:
+        if list[2] > start:
             if list[2] < time:
-                if datetime.datetime.fromtimestamp(list[2]).hour < 7:
+                if datetime.datetime.fromtimestamp(list[2]).hour < 7 or datetime.datetime.fromtimestamp(list[2]).hour >21:
                     continue
                 if list[-1] == 8 or list[-1] == 9:
                     # print str(datetime.datetime.fromtimestamp(list[2]).hour )

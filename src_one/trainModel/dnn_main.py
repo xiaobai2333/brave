@@ -88,7 +88,7 @@ def train_model():
     arr_num = x_data.shape[0]
     train_data, train_label, test_data, test_label = train_test_split(x_data, arr_num)
     logging.info( 'train_data :'+str(train_data.shape))
-    logging.info( 'train_label :'+str(train_label.shap))
+    logging.info( 'train_label :'+str(train_label.shape))
     logging.info( 'test_data :'+str(test_data.shape))
     logging.info('test_label :'+str(test_label.shape))
     # ==========================================================================================

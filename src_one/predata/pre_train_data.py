@@ -345,10 +345,17 @@ def get_first_data():
     np.save(data_path+'first_type_data.npy', first_data)
     print 'get user right from web...'
     userReal = get_user_right(all_users)
+   # userReal_file = open(data_path+'all_userid', 'r')
+   # userReal = pickle.load(userReal_file) 
     print 'get user right success...'
     print 'get user history by now start...'
     user_history_bynow = {}
+    k = 0
+    l1 = len(userReal)
     for uId in userReal:
+        if k%1000==0:
+            print k,' / ', l1
+        k += 1
         uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
         user_history_bynow[uId]=uHis
     user_history_bynow_file = open(data_path+'user_history_by_now', 'w')
