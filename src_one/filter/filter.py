@@ -98,15 +98,32 @@ def ishourStoreInCandidateProbabilities(sche_time,storeId,hour_candidate,store_c
         return False
     sche_hour = datetime.datetime.fromtimestamp(sche_time).hour
     rand=random.random()
-    
 
-    if not sche_hour in hour_candidate:
-        if rand <= 1.0/10:
-            return True
-    else:
+
+
+
+    if  sche_hour in hour_candidate:
         P = 1.0* (hour_candidate.count(sche_hour)+1 )/10
         if rand <= P:
             return True
+    else:
+        for i in range(len(hour_candidate)):
+            hour_candidate +=1
+        if sche_hour in hour_candidate:
+            P = 1.0* (hour_candidate.count(sche_hour)+1 )/10*0.8
+            if rand <= P:
+                return True
+        else:
+            for i in range(len(hour_candidate)):
+                hour_candidate -=2
+            if sche_hour in hour_candidate:
+                P = 1.0* (hour_candidate.count(sche_hour)+1 )/10*0.8
+                if rand <= P:
+                    return True
+
+            else:
+                if rand <= 1.0 / 10:
+                    return True
     return False
   #  return True
 
