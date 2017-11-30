@@ -5,3 +5,4 @@ userClassCandidates/
 .idea/
 src_one/properties.py
 data/log/
+src_one/main/nohup.out
