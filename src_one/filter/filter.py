@@ -108,14 +108,14 @@ def ishourStoreInCandidateProbabilities(sche_time,storeId,hour_candidate,store_c
             return True
     else:
         for i in range(len(hour_candidate)):
-            hour_candidate +=1
+            hour_candidate[i] +=1
         if sche_hour in hour_candidate:
             P = 1.0* (hour_candidate.count(sche_hour)+1 )/10*0.8
             if rand <= P:
                 return True
         else:
             for i in range(len(hour_candidate)):
-                hour_candidate -=2
+                hour_candidate[i] -=2
             if sche_hour in hour_candidate:
                 P = 1.0* (hour_candidate.count(sche_hour)+1 )/10*0.8
                 if rand <= P:
