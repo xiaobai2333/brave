@@ -68,20 +68,20 @@ def isClassInCandidate(sche,classId_candidate):
         P =   classId_candidate[0][class_id] *1.0 / history_sum * weight
         if rand<=P:
             return True
+    else:
+        if class_id in classId_candidate[1]:
+            if rand<=0.2*weight:
+                return True
+        else:
+            P = 0
+            for rule in classId_candidate[2]:
+                if class_id in rule[1]:
+                    for aprioi_class in rule[0]:
+                        if P < classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]:
+                            P = classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]
 
-    if class_id in classId_candidate[1]:
-        if rand<=0.2*weight:
-            return True
-
-    P = 0
-    for rule in classId_candidate[2]:
-        if class_id in rule[1]:
-            for aprioi_class in rule[0]:
-                if P < classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]:
-                    P = classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]
-
-    if rand <=P*weight:
-        return True
+            if rand <=P*weight:
+                return True
 
     return False
 
