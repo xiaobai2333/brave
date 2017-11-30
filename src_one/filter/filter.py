@@ -63,13 +63,14 @@ def isClassInCandidate(sche,classId_candidate):
 
     rand = random.random()
     history_sum = sum(classId_candidate[0].values())
+    weight = 2
     if  class_id in classId_candidate[0]:
-        P =   classId_candidate[0][class_id] *1.0 / history_sum
+        P =   classId_candidate[0][class_id] *1.0 / history_sum * weight
         if rand<=P:
             return True
 
     if class_id in classId_candidate[1]:
-        if rand<=0.2:
+        if rand<=0.2*weight:
             return True
 
     P = 0
@@ -79,7 +80,7 @@ def isClassInCandidate(sche,classId_candidate):
                 if P < classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]:
                     P = classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]
 
-    if rand <=P:
+    if rand <=P*weight:
         return True
 
     return False
@@ -100,10 +101,10 @@ def ishourStoreInCandidateProbabilities(sche_time,storeId,hour_candidate,store_c
     
 
     if not sche_hour in hour_candidate:
-        if rand <= 1.0/20:
+        if rand <= 1.0/10:
             return True
     else:
-        P = 1.0* (hour_candidate.count(sche_hour)+1 )/20
+        P = 1.0* (hour_candidate.count(sche_hour)+1 )/10
         if rand <= P:
             return True
     return False
