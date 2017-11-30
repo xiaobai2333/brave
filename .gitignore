@@ -6,3 +6,4 @@ userClassCandidates/
 src_one/properties.py
 data/log/
 appoint_queue_map
+src_one/main/nohup.out
