@@ -123,7 +123,7 @@ def predict_candidate_score(index,slots, candidates):
             for schedule1 in schedules_list:
                 sch = schedule1[:4]
                 candidateid = schedule1[4]
-                if isClassInCandidate(sch, classId_candidate):
+                if True:
                     data = merge_data(sch, user_history)
                     singleScore = get_score(model, data)
                     if slot_Score[slot_id].has_key(candidateid):
