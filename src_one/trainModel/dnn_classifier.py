@@ -17,7 +17,7 @@ hour_history_num = num1
 week_history_num = num1
 
 
-def build_model(nums=[5000, 500, 1500, 16, 7],
+def build_model(nums=[10000, 1000, 3000, 16, 7],
                 out_embedding=[16, 16, 16, 8, 8],
                 reg_embedding=[0.000, 0.000, 0.000, 0.00, 0.000, 0.00, 0.0, 0.0],
                 mlp_layers=[2048, 1024, 512, 256, 64],
