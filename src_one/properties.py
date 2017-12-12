@@ -23,8 +23,8 @@ slotDatabase = 'brave'
 start_year = 2017
 start_month = 7
 start_day = 1
-lastestUpdateTime = datetime.datetime.now()- datetime.timedelta(hours=24)
-lastestUpdateUnix = int(time.time())-24*60*60
+lastestUpdateTime = datetime.datetime.now()
+lastestUpdateUnix = int(time.time())
 end_year = lastestUpdateTime.year
 end_month = lastestUpdateTime.month
 end_day = lastestUpdateTime.day
