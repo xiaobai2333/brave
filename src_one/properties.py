@@ -18,6 +18,8 @@ slotIp = '127.0.0.1'
 slotPort = 3306
 slotDatabase = 'brave'
 
+# cities
+cities = (0,12597)
 
 # train data time block (read_data_from_database)
 start_year = 2017

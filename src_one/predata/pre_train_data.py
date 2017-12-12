@@ -584,7 +584,7 @@ if __name__ == '__main__':
     # get_weather_data()
     # deal_appoint_data()
     # get_coldstart_data()
-    get_first_data()
+    see_data()
     # get_sch_map()
     # get_sch_history()
     # see_data()

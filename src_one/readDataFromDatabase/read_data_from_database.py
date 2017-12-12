@@ -19,7 +19,8 @@ from read_data_for_predict import get_course
 # 课程id映射表：  (数据库对应的id： class_property表对应的id)
 session_maker = sqlalchemy.orm.sessionmaker()
 # data_path = '../../data_11_7/'
-from src_one.properties import trainProtocol, trainAccount, trainPassword, trainIp, trainPort, trainClassDatabase, trainUserDatabase, start_year, start_month, start_day, end_year, end_month, end_day, data_path
+from src_one.properties import trainProtocol, trainAccount, trainPassword, trainIp, trainPort, trainClassDatabase, trainUserDatabase, start_year, start_month, start_day, end_year, end_month, end_day, data_path, \
+    cities
 
 
 #  远程数据库
@@ -86,7 +87,7 @@ def get_appoint_map(courses):
     # print (courses)
     database = trainClassDatabase
     session = init(database)
-    schedule = session.query(Appoint).filter(Appoint.city_id.in_((0, 12597)),
+    schedule = session.query(Appoint).filter(Appoint.city_id.in_(cities),
                                              Appoint.class_type_id == 1,
                                              Appoint.class_id.in_(courses),
                                              Appoint.start_time >= datetime_to_timestamp(
@@ -112,7 +113,7 @@ def get_appoint_map(courses):
 def get_appoint_map_class(start_month, start_day, end_month, end_day):
     database = trainClassDatabase
     session = init(database)
-    schedule = session.query(Appoint).filter(Appoint.city_id.in_((0, 12597)),
+    schedule = session.query(Appoint).filter(Appoint.city_id.in_(cities),
                                              Appoint.class_type_id == 1,
                                              Appoint.start_time >= datetime_to_timestamp(
                                                  datetime.datetime(2017, start_month, start_day)),
@@ -137,7 +138,7 @@ def get_appoint_map_class(start_month, start_day, end_month, end_day):
 def get_appoint_map_coach(start_month, start_day, end_month, end_day):
     database = trainClassDatabase
     session = init(database)
-    schedule = session.query(Appoint).filter(Appoint.city_id.in_((0, 12597)),
+    schedule = session.query(Appoint).filter(Appoint.city_id.in_(cities),
                                              Appoint.class_type_id == 1,
                                              Appoint.start_time >= datetime_to_timestamp(
                                                  datetime.datetime(2017, start_month, start_day)),
