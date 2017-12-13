@@ -63,7 +63,7 @@ def isClassInCandidate(sche,classId_candidate):
 
     rand = random.random()
     history_sum = sum(classId_candidate[0].values())
-    weight = 2
+    weight = 3
     if  class_id in classId_candidate[0]:
         P =   classId_candidate[0][class_id] *1.0 / history_sum * weight
         if rand<=P:
@@ -73,13 +73,12 @@ def isClassInCandidate(sche,classId_candidate):
             if rand<=0.2*weight:
                 return True
         else:
-            P = 0
+            P = 0.1
             for rule in classId_candidate[2]:
                 if class_id in rule[1]:
                     for aprioi_class in rule[0]:
                         if P < classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]:
                             P = classId_candidate[0][aprioi_class] *1.0 / history_sum * rule[2]
-
             if rand <=P*weight:
                 return True
 
@@ -99,28 +98,24 @@ def ishourStoreInCandidateProbabilities(sche_time,storeId,hour_candidate,store_c
     sche_hour = datetime.datetime.fromtimestamp(sche_time).hour
     rand=random.random()
 
-
-
-
-    if  sche_hour in hour_candidate:
-        P = 1.0* (hour_candidate.count(sche_hour)+1 )/10
+    if sche_hour in hour_candidate:
+        P = 1.0* (hour_candidate.count(sche_hour)+1)/10
         if rand <= P:
             return True
     else:
         for i in range(len(hour_candidate)):
             hour_candidate[i] +=1
         if sche_hour in hour_candidate:
-            P = 1.0* (hour_candidate.count(sche_hour)+1 )/10*0.8
+            P = 1.0* (hour_candidate.count(sche_hour)+1)/10*0.8
             if rand <= P:
                 return True
         else:
             for i in range(len(hour_candidate)):
                 hour_candidate[i] -=2
             if sche_hour in hour_candidate:
-                P = 1.0* (hour_candidate.count(sche_hour)+1 )/10*0.8
+                P = 1.0* (hour_candidate.count(sche_hour)+1)/10*0.8
                 if rand <= P:
                     return True
-
             else:
                 if rand <= 1.0 / 10:
                     return True
