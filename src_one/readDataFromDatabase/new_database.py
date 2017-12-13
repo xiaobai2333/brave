@@ -65,6 +65,9 @@ class Slot(BaseModel):
     id = Column(Integer, primary_key=True)
     start_time = Column(Integer)
     store_id = Column(Integer)
+    course_id = Column(Integer)
+    coach_id =Column(Integer)
+    score = Column(Integer)
 
 
 class Candidate(BaseModel):

@@ -42,6 +42,33 @@ def get_slots():
     return slot_map
 
 
+def read_slots_only():
+    database = slotDatabase
+    session = init(database)
+    slots = session.query(Slot).all()
+    slot_map = {}
+    candidate_map = {}
+    for slot in slots:
+        slot_id = slot.id
+        # print slot.start_time
+        slot_start_time = int(time.mktime(slot.start_time.timetuple()))
+        # print slot_start_time
+        # print slot_start_time
+        slot_store_id = slot.store_id
+        slot_course_id = slot.course_id
+        slot_coach_id = slot.coach_id
+        slot_map[slot_id] = [slot_start_time, slot_store_id]
+        if not candidate_map.has_key(slot_id):
+            candidate_map[slot_id] = []
+        candidate_map[slot_id].append([slot_coach_id, slot_course_id, 1])
+    # slot_file = open(data_path + 'slots', 'w')
+    # pickle.dump(slot_map, slot_file)
+    # slot_file.close()
+    print 'slot num: ', len(slot_map.keys())
+    session.close()
+    return slot_map, candidate_map
+
+
 def get_candicate():
     database = slotDatabase
     session = init(database)
@@ -102,12 +129,32 @@ def writeback_databse(sch_score):
     session.close()
 
 
+def writeback_slot(sch_score):
+    database = slotDatabase
+    session = init(database)
+    query = session.query(Slot)
+    # query.update({Candidate.score: 0})
+    # result_file = open(data_path+'all_result', 'r')
+    # sch_score = pickle.load(result_file)
+    # result_file.close()
+    i = 0
+    length = len(sch_score.keys())
+    for slot_id in sch_score:
+        for candicate_id in sch_score[slot_id]:
+            query.filter(Slot.id == slot_id).update({Slot.score: sch_score[slot_id][candicate_id]})
+        logging.info('process: {i}/ {length}'.format(i=i, length=length))
+        i += 1
+    logging.info('write back database success....')
+    session.close()
+
+
 def read_data_for_predict():
     print 'read slot data start......'
-    slots = get_slots()
+    # slots = get_slots()
+    slots, candicates= read_slots_only()
     print 'read slot data success....'
     print 'read candicates start.....'
-    candicates = get_candicate()
+    # candicates = get_candicate()
     print 'read candicates success....'
     return slots, candicates
 
