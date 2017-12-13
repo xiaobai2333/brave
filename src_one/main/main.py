@@ -9,7 +9,7 @@ from src_one.filter.filter import  get_apriori_rulse, get_hour_store_Canditate, 
     get_Class_Candidate, ishourStoreInCandidate, isClassInCandidate, ishourStoreInCandidateProbabilities
 from src_one.score.single_scroe import merge_data, get_score
 from src_one.predata.preschedule import load_data,  get_candidate_schedules
-from src_one.readDataFromDatabase.read_data_for_predict import writeback_databse, read_data_for_predict
+from src_one.readDataFromDatabase.read_data_for_predict import writeback_databse, read_data_for_predict, writeback_slot
 from keras.models import load_model
 import multiprocessing
 import time
@@ -18,6 +18,7 @@ import datetime
 import numpy as np
 import cPickle as pickle
 from src_one.properties import data_path, model_save_path, candidate_path, result_path, thread_num
+
 
 def init_log():
     log_format = '[%(asctime)s][%(levelname)s][file:%(filename)s][line:%(lineno)s] %(message)s'
@@ -173,7 +174,8 @@ def main():
     end = time.clock()
     logging.info('use time: '+str(end-start))
     logging.info('write back database...')
-    writeback_databse(sch_score)
+    # writeback_databse(sch_score)
+    writeback_slot(sch_score)
     logging.info('write success...')
 
 
