@@ -89,7 +89,7 @@ all_len = len(user_list)
 length = int(np.math.ceil(all_len*1.0/thread_num))
 
 
-def predict_candidate_score(index,slots, candidates):
+def predict_candidate_score(index, slots, candidates):
     logging.info('process '+str(index)+ 'start....')
     start = time.clock()
     model = load_model(model_name)
@@ -99,11 +99,10 @@ def predict_candidate_score(index,slots, candidates):
     else:
         end = (index+1)*length
     slot_Score = {}
+    slot_single_score = {}
     subUserList = user_list[index*length: end]
     subLen =  len(subUserList)
     i = 1
-
-
     time_filter = 0
     time_predict = 0
     for user_id in subUserList:
@@ -116,7 +115,9 @@ def predict_candidate_score(index,slots, candidates):
         for slot_id in slotIDs:
             sch_t = slots[slot_id][0]
             storeId = slots[slot_id][1]
-            if not ishourStoreInCandidateProbabilities(sch_t,storeId ,  hour_candidate,store_candidate):
+            slot_coach_id = slots[slot_id][2]
+            slot_course_id = slots[slot_id][3]
+            if not ishourStoreInCandidateProbabilities(sch_t, storeId, hour_candidate, store_candidate):
                 continue
             schedules_list = get_candidate_schedules(candidates, slot_id, sch_t, storeId)
             if not slot_Score.has_key(slot_id):
@@ -124,15 +125,21 @@ def predict_candidate_score(index,slots, candidates):
             for schedule1 in schedules_list:
                 sch = schedule1[:4]
                 candidateid = schedule1[4]
-                if isClassInCandidate(sch,classId_candidate):
+                if isClassInCandidate(sch, classId_candidate):
                     data = merge_data(sch, user_history)
                     singleScore = get_score(model, data)
                     if slot_Score[slot_id].has_key(candidateid):
                         slot_Score[slot_id][candidateid] += singleScore[0][0]
-                       # slot_Score[slot_id][candidateid] += 1
                     else:
                         slot_Score[slot_id][candidateid] = singleScore[0][0]
-                       # slot_Score[slot_id][candidateid] = 1
+            slot_sch = [slot_course_id, storeId, sch_t, slot_coach_id]
+            if isClassInCandidate(slot_sch, classId_candidate):
+                data = merge_data(slot_sch, user_history)
+                singleScore = get_score(model, data)
+                if slot_single_score.has_key(slot_id):
+                    slot_single_score[slot_id] += singleScore[0][0]
+                else:
+                    slot_single_score[slot_id] = singleScore[0][0]
         etime2 = time.clock()
         time_predict += etime2 - etime
         if i%100 == 0:
@@ -142,6 +149,9 @@ def predict_candidate_score(index,slots, candidates):
     file_score = open(result_path + 'sch_score_sorted'+str(index), 'w')
     pickle.dump(slot_Score, file_score)
     file_score.close()
+    file_single_score = open(result_path + 'sch_score_single' + str(index), 'w')
+    pickle.dump(slot_single_score, file_single_score)
+    file_single_score.close()
     end = time.clock()
     logging.info('process*'+str(index)+ ' end....'+'use time: '+str(end-start))
 
@@ -169,22 +179,26 @@ def main():
     logging.info('==================')
     logging.info('end......')
     logging.info('merge start...')
-    sch_score = merge_result()
+    sch_score, slot_score = merge_result()
     logging.info('merge over....')
     end = time.clock()
     logging.info('use time: '+str(end-start))
     logging.info('write back database...')
-    # writeback_databse(sch_score)
-    writeback_slot(sch_score)
+    writeback_databse(sch_score, slot_score)
+    # writeback_slot(sch_score)
     logging.info('write success...')
 
 
 def merge_result():
     result_map = {}
+    slot_map = {}
     for i in range(thread_num):
         result_file = open(result_path+'sch_score_sorted'+str(i), 'r')
         sch_score = pickle.load(result_file)
         result_file.close()
+        result_single_file = open(result_path + 'sch_score_single' + str(i), 'r')
+        slot_score = pickle.load(result_single_file)
+        result_single_file.close()
         for slot_id in sch_score:
             if not result_map.has_key(slot_id):
                 result_map[slot_id] = {}
@@ -193,6 +207,11 @@ def merge_result():
                     result_map[slot_id][candidate_id]=sch_score[slot_id][candidate_id]
                 else:
                     result_map[slot_id][candidate_id] += sch_score[slot_id][candidate_id]
+        for slot_id in slot_score:
+            if not slot_map.has_key(slot_id):
+                slot_map[slot_id] = slot_score[slot_id]
+            else:
+                slot_map[slot_id] += slot_score[slot_id]
     logging.info('all : '+str(len(result_map)))
     for slot_id in result_map:
         logging.info(' slot id : {slot_id}============================='.format(slot_id=slot_id))
@@ -202,7 +221,10 @@ def merge_result():
     all_result_file = open(result_path+'all_result', 'w')
     pickle.dump(result_map, all_result_file)
     all_result_file.close()
-    return result_map
+    all_slot_file = open(result_path+'slot_result', 'w')
+    pickle.dump(slot_map, all_slot_file)
+    all_slot_file.close()
+    return result_map, slot_map
 
 
 def see_result():

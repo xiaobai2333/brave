@@ -54,9 +54,7 @@ def get_col_class_Candidate(history_classID,userID,userDict,itemUser):
     return Col_recom_result
 
 
-
-
-def isClassInCandidate(sche,classId_candidate):
+def isClassInCandidate(sche, classId_candidate):
     class_id = sche[0]
     if len(classId_candidate)==0:
         return False
