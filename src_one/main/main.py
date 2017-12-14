@@ -174,8 +174,8 @@ def main():
     end = time.clock()
     logging.info('use time: '+str(end-start))
     logging.info('write back database...')
-    writeback_databse(sch_score)
-    # writeback_slot(sch_score)
+    # writeback_databse(sch_score)
+    writeback_slot(sch_score)
     logging.info('write success...')
 
 
