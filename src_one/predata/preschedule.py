@@ -34,6 +34,8 @@ def get_schedules(class_id_list, coach_id_list, store_id, start_time):
 
 def get_candidate_schedules(candidates, slot_id, sch_t, storeId):
     schedules = []
+    if not candidates.has_key(slot_id):
+        return schedules
     for candidate in candidates[slot_id]:
         coach_id = candidate[0]
         class_id = candidate[1]
