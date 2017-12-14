@@ -159,11 +159,11 @@ def writeback_slot(sch_score):
 
 def read_data_for_predict():
     print 'read slot data start......'
-    # slots = get_slots()
-    slots, candicates= read_slots_only()
+    slots = get_slots()
+    # slots, candicates= read_slots_only()
     print 'read slot data success....'
     print 'read candicates start.....'
-    # candicates = get_candicate()
+    candicates = get_candicate()
     print 'read candicates success....'
     return slots, candicates
 
