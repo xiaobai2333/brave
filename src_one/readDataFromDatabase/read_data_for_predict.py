@@ -33,7 +33,9 @@ def get_slots():
        # print slot_start_time
         # print slot_start_time
         slot_store_id = slot.store_id
-        slot_map[slot_id] = [slot_start_time, slot_store_id]
+        slot_course_id = slot.course_id
+        slot_coach_id = slot.coach_id
+        slot_map[slot_id] = [slot_start_time, slot_store_id, slot_coach_id, slot_course_id]
     slot_file = open(data_path+'slots', 'w')
     pickle.dump(slot_map, slot_file)
     slot_file.close()
@@ -110,7 +112,7 @@ def get_course():
     return all_coures
 
 
-def writeback_databse(sch_score):
+def writeback_databse(sch_score, slot_score):
     database = slotDatabase
     session = init(database)
     query = session.query(Candidate)
@@ -124,6 +126,13 @@ def writeback_databse(sch_score):
         for candicate_id in sch_score[slot_id]:
             query.filter(Candidate.id==candicate_id).update({Candidate.score: sch_score[slot_id][candicate_id]})
         logging.info('process: {i}/ {length}'.format(i=i,length=length))
+        i += 1
+    query2 = session.query(Slot)
+    i = 0
+    leng = len(slot_score.keys())
+    for slot_id in slot_score:
+        query2.filter(Slot.id==slot_id).update({Slot.score: slot_score[slot_id]})
+        logging.info('process: {i}/ {length}'.format(i=i, length=leng))
         i += 1
     logging.info('write back database success....')
     session.close()
@@ -150,11 +159,11 @@ def writeback_slot(sch_score):
 
 def read_data_for_predict():
     print 'read slot data start......'
-    # slots = get_slots()
-    slots, candicates= read_slots_only()
+    slots = get_slots()
+    # slots, candicates= read_slots_only()
     print 'read slot data success....'
     print 'read candicates start.....'
-    # candicates = get_candicate()
+    candicates = get_candicate()
     print 'read candicates success....'
     return slots, candicates
 
