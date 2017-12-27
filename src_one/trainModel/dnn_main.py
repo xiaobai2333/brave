@@ -100,6 +100,7 @@ def train_model():
     score = model.evaluate(get_data_batch(test_data), test_label, batch_size=500)
     print model.metrics_names
     print score
+    logging.info('score'+str(score))
 
 
 def predict():

@@ -38,15 +38,17 @@ logging.info('****')
 lastestTimeFile = open(data_path+'lastestUpdateTime','w')
 pickle.dump(lastestUpdateTime,lastestTimeFile)
 lastestTimeFile.close()
+
+
 def updatePersistentData():
-    logging.info( 'Start update user candidates....')
-    multiProcess_BuildCandidates()
-    logging.info('Update user candidates success...')
     logging.info('Start train new model...')
     train_model()
     logging.info('Train new model success...')
     logging.info('Start evaluate model...')
     predict()
+    logging.info('Start update user candidates....')
+    multiProcess_BuildCandidates()
+    logging.info('Update user candidates success...')
     logging.info('Update all data success...')
 
 if __name__ == '__main__':
