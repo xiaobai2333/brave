@@ -96,6 +96,7 @@ def get_appoint_map(courses):
                                                   datetime.datetime(end_year, end_month, end_day))).all()
     num = len(schedule)
     print('all appoint schedule number: ', num)
+    session.close()
     sch_map = {}
     for sch in schedule:
         if not sch_map.has_key(sch.user_id):
@@ -105,7 +106,7 @@ def get_appoint_map(courses):
     file1 = open(data_path+'appoint_queue_map', 'w')
     pickle.dump(sch_map, file1)
     file1.close()
-    session.close()
+   # session.close()
     return sch_map
 
 
