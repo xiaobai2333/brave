@@ -2,6 +2,7 @@ import requests
 import json
 import pickle
 import numpy as np
+import logging
 from src_one.properties import data_path, url
 
 def get_user_rights_web(user_id):
@@ -31,6 +32,9 @@ def get_user_right(user):
     file1 = open(data_path+'all_userid', 'w')
     pickle.dump(usersReal, file1)
     file1.close()
+    num = len(usersReal)
+    # print 'Real users number: ', num
+    logging.info('Real users number: '+str(num))
     return usersReal
    # return user_right
 

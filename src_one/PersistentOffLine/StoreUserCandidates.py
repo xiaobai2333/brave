@@ -18,7 +18,7 @@ all_user_file.close()
 
 user_list = list(user_list)
 all_len = len(user_list)
-logging.info( 'all data length: '+str(all_len) )
+logging.info('all data length: '+str(all_len))
 length = int(np.math.ceil(all_len*1.0/thread_num))
 historyStarttime = (datetime.datetime(end_year, end_month, end_day) -datetime.datetime(1970, 1, 1)- datetime.timedelta(hours=8)).total_seconds()
 appoint_queue, user, coach, schedule = load_data()

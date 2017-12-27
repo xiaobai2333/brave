@@ -3,6 +3,7 @@ import numpy as np
 import math
 from keras.utils import np_utils
 import datetime
+import logging
 # from dealOriginData import *
 from src_one.predata.dealOriginData import *
 from src_one.properties import data_path, padding_num
@@ -53,104 +54,6 @@ def deal_appoint_data():
         n += qiandao
     print '======================================='
     print 'qiandao : ', n
-
-
-def get_coldstart_data():
-    appoint_file = open(data_path + appoint_queue_id, 'r')
-    appoint_queue = pickle.load(appoint_file)
-    coach_file = open(data_path+coach_map_id, 'r')
-    coach = pickle.load(coach_file)
-    user_file = open(data_path+user_map_id, 'r')
-    user = pickle.load(user_file)
-    schedule_file = open(data_path+schedule_coach_map_id, 'r')
-    schedule = pickle.load(schedule_file)
-    weather_file = open(data_path+weather_id, 'r')
-    weather = pickle.load(weather_file)
-    # class_property = np.load(data_path+class_property_id)
-    miss_user = set()
-    coldstart_data = []
-    e1 = 0
-    e2 = 0
-    e3 = 0
-    e4 = 0
-    e5 = 0
-    n1 = 0
-    n0 = 0
-    for key in appoint_queue.keys():
-        for log in appoint_queue[key]:
-            user_id = key
-            # print key
-            sch_id = log[0]
-            store_id = log[1]
-            start_time = log[2]
-            end_time  = log[3]
-            class_id = log[4]
-            # class_pro = class_property[class_map1[class_id]]
-            status = log[5]
-            if schedule.has_key(sch_id):
-                coach_id = schedule[sch_id]
-            else:
-                e1 += 1
-                continue
-            if user.has_key(user_id):
-                if user[user_id] == '':
-                    e2 += 1
-                    print 'user_id sex = null :', user_id
-                    user_sex = 0
-                else:
-                    user_sex = int(user[user_id])
-            else:
-                e3 += 1
-                print 'user_id miss :', user_id
-                miss_user.add(user_id)
-                user_sex = 0
-            if coach.has_key(coach_id):
-                if coach[coach_id] == '':
-                    e4 += 1
-                    print 'coach_id sex = null : ', coach_id
-                    coach_sex = 0
-                else:
-                    coach_sex = int(coach[coach_id])
-            else:
-                e5 += 1
-                print 'coach_id miss : ', coach_id
-                coach_sex = 0
-            convert_time = datetime.datetime.fromtimestamp(start_time)
-            month = convert_time.month
-            day = convert_time.day
-            key1 = (month, day)
-            tempareture_max = weather[key1][0]
-            tempareture_min = weather[key1][1]
-            is_rain = weather[key1][2]
-            weekday = datetime.datetime.isoweekday(convert_time)
-            hour = convert_time.hour
-            # minute = convert_time.minute
-            if status == 8 or status == 9:
-                each_data = [user_sex, class_id, store_id, coach_id]
-                # each_data.extend(class_pro)
-                each_data.extend([coach_sex, month, day,  weekday, hour, tempareture_max, tempareture_min, is_rain, 1])
-                n1 += 1
-            else:
-                each_data = [user_sex, class_id, store_id, coach_id]
-                # each_data.extend(class_pro)
-                each_data.extend([coach_sex, month, day,  weekday, hour, tempareture_max, tempareture_min, is_rain, 0])
-                n0 += 1
-            coldstart_data.append(each_data)
-    appoint_file.close()
-    coach_file.close()
-    user_file.close()
-    schedule_file.close()
-    weather_file.close()
-    print 'schedule id miss : ', e1
-    print 'user_id sex = null : ', e2
-    print 'user_id miss : ', len(miss_user)
-    print 'coach_id sex = null : ', e4
-    print 'coach_id miss : ', e5
-    coldstart_data = np.array(coldstart_data)
-    print 'cold start data shape : ', coldstart_data.shape
-    print 'active num : ', n1
-    print 'negative num : ', n0
-    np.save(data_path+'coldstart_data.npy', coldstart_data)
 
 
 def get_first_data():
@@ -354,7 +257,7 @@ def get_first_data():
     l1 = len(userReal)
     for uId in userReal:
         if k%1000==0:
-            print k,' / ', l1
+            print k, ' / ', l1
         k += 1
         uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
         user_history_bynow[uId]=uHis
