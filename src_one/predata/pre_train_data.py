@@ -143,9 +143,6 @@ def get_first_data():
             month = convert_time.month
             day = convert_time.day
             key1 = (month, day)
-            # tempareture_max = weather[key1][0]
-            # tempareture_min = weather[key1][1]
-            # is_rain = weather[key1][2]
             weekday = convert_time.weekday()
             weekday_sparse = np_utils.to_categorical(weekday, 7)
             # print weekday_sparse
@@ -155,10 +152,6 @@ def get_first_data():
             hour_sparse = np_utils.to_categorical(hour-7, 15)
             # dealed history data
             pressenP = getPresentP(user_id, start_time, appoint_queue)
-            # class_pressenP = getClassPresentP(class_id, start_time, appoint_queue_class)
-            # coach_pressenP = getCoachPresentP(coach_id, start_time, appoint_queue_coach)
-            class_pressenP = 0
-            coach_pressenP = 0
             average_appoint = get_sum_appoint(user_id, start_time, appoint_queue)
             last_week_times = get_lastweek_appoints(user_id,start_time,appoint_queue)
             last_timedelta = get_last_timedelta(user_id, start_time, appoint_queue)
@@ -223,14 +216,13 @@ def get_first_data():
                 n0 += 1
             else:
                 continue
+            if len(each_data) != 1056:
+                print 'wrong length: ', len(each_data)
+                continue
             first_data.append(each_data)
             if t1%1000 == 0:
                 print t1
-                print 'each data shape : ', len(each_data)
-                print 'first data shape : ', len(first_data), 'weidu: ', len(first_data[0])
             t1 += 1
-        if t1 >= 10000:
-            break;
 
     appoint_file.close()
     coach_file.close()
