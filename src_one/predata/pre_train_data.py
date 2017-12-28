@@ -194,9 +194,6 @@ def get_first_data():
             if pressenP == -1 or average_appoint == -1 or last_timedelta == -1:
                 continue
             # minute = convert_time.minute
-            if t1%1000 == 0:
-                print t1
-            t1 += 1
             each_data = [user_sex, pressenP, average_appoint, last_timedelta, last_week_times]
             each_data.extend(coach_history)
             each_data.extend(coach_history_weight)
@@ -226,8 +223,12 @@ def get_first_data():
                 n0 += 1
             else:
                 continue
-
             first_data.append(each_data)
+            if t1%1000 == 0:
+                print t1
+                print 'each data shape : ', len(each_data)
+                print 'first data shape : ', len(first_data), 'weidu: ', len(first_data[0])
+            t1 += 1
 
     appoint_file.close()
     coach_file.close()
@@ -247,24 +248,22 @@ def get_first_data():
     print 'all coaches number: ', len(all_coaches)
     np.save(data_path+'first_type_data.npy', first_data)
     print 'get user right from web...'
-    userReal = get_user_right(all_users)
-   # userReal_file = open(data_path+'all_userid', 'r')
-   # userReal = pickle.load(userReal_file) 
-    print 'get user right success...'
-    print 'get user history by now start...'
-    user_history_bynow = {}
-    k = 0
-    l1 = len(userReal)
-    for uId in userReal:
-        if k%1000==0:
-            print k, ' / ', l1
-        k += 1
-        uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
-        user_history_bynow[uId]=uHis
-    user_history_bynow_file = open(data_path+'user_history_by_now', 'w')
-    pickle.dump(user_history_bynow, user_history_bynow_file)
-    user_history_bynow_file.close()
-    print 'get user history by now ...'
+    # userReal = get_user_right(all_users)
+    # print 'get user right success...'
+    # print 'get user history by now start...'
+    # user_history_bynow = {}
+    # k = 0
+    # l1 = len(userReal)
+    # for uId in userReal:
+    #     if k%1000==0:
+    #         print k, ' / ', l1
+    #     k += 1
+    #     uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
+    #     user_history_bynow[uId]=uHis
+    # user_history_bynow_file = open(data_path+'user_history_by_now', 'w')
+    # pickle.dump(user_history_bynow, user_history_bynow_file)
+    # user_history_bynow_file.close()
+    # print 'get user history by now ...'
 
 
 def get_user_history_bynow(userId, appointMap, user, coach, schedule):

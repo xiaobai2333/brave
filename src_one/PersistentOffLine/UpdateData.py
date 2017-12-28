@@ -23,7 +23,7 @@ from src_one.predata.pre_train_data import get_first_data
 logging.info('Start update data, please wait....')
 # read_data_from_database()
 logging.info('Start merge data to train data type....')
-# get_first_data()
+get_first_data()
 logging.info('Merge data to train data success...')
     
 from src_one.PersistentOffLine.StoreUserCandidates import multiProcess_BuildCandidates
