@@ -7,6 +7,7 @@ import datetime
 import sqlalchemy
 import sqlalchemy.orm
 import numpy as np
+import logging
 import cPickle as pickle
 from new_database import Appoint, User, Coach, Class, Schedule, Schedule_coach
 from read_data_for_predict import get_course
@@ -67,14 +68,15 @@ def get_all_schedule():
     session = init(database)
     schedule = session.query(Schedule_coach).all()
     num = len(schedule)
-    print(num)
+    session.close()
+    # print('All schedules number: ', num)
+    logging.info('All schedules number: '+str(num))
     sch_map = {}
     for sch in schedule:
         sch_map[sch.schedule_id] = sch.coach_id
     file = open(data_path+'schedule_coach_map', 'w')
     pickle.dump(sch_map, file)
     file.close()
-    session.close()
     return sch_map
 
 
@@ -95,7 +97,8 @@ def get_appoint_map(courses):
                                              Appoint.end_time <= datetime_to_timestamp(
                                                   datetime.datetime(end_year, end_month, end_day))).all()
     num = len(schedule)
-    print('all appoint schedule number: ', num)
+    # print('All appoints number: ', num)
+    logging.info('All appoints number: '+str(num))
     session.close()
     sch_map = {}
     for sch in schedule:
@@ -175,14 +178,15 @@ def get_user_map(appoint_map):
     # user.extend(queue_map.keys())
     schedule = session.query(User).filter(User.user_id.in_(user)).all()
     num = len(schedule)
-    print(num)
+    session.close()
+    # print('All users number: ', num)
+    logging.info('All users number: '+str(num))
     sch_map = {}
     for sch in schedule:
         sch_map[sch.user_id] = sch.sex
     file1 = open(data_path+'user_sex', 'w')
     pickle.dump(sch_map, file1)
     file1.close()
-    session.close()
     return sch_map
 
 
@@ -192,14 +196,15 @@ def get_coach_map():
     session = init(database)
     schedule = session.query(Coach).all()
     num = len(schedule)
-    print(num)
+    # print('All coaches number: ', num)
+    logging.info('All coaches number: '+str(num))
+    session.close()
     sch_map = {}
     for sch in schedule:
         sch_map[sch.id] = sch.sex
     file1 = open(data_path+'coach_sex', 'w')
     pickle.dump(sch_map, file1)
     file1.close()
-    session.close()
     return sch_map
 
 

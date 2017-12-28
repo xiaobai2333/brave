@@ -3,6 +3,7 @@ import numpy as np
 import math
 from keras.utils import np_utils
 import datetime
+import logging
 # from dealOriginData import *
 from src_one.predata.dealOriginData import *
 from src_one.properties import data_path, padding_num
@@ -53,104 +54,6 @@ def deal_appoint_data():
         n += qiandao
     print '======================================='
     print 'qiandao : ', n
-
-
-def get_coldstart_data():
-    appoint_file = open(data_path + appoint_queue_id, 'r')
-    appoint_queue = pickle.load(appoint_file)
-    coach_file = open(data_path+coach_map_id, 'r')
-    coach = pickle.load(coach_file)
-    user_file = open(data_path+user_map_id, 'r')
-    user = pickle.load(user_file)
-    schedule_file = open(data_path+schedule_coach_map_id, 'r')
-    schedule = pickle.load(schedule_file)
-    weather_file = open(data_path+weather_id, 'r')
-    weather = pickle.load(weather_file)
-    # class_property = np.load(data_path+class_property_id)
-    miss_user = set()
-    coldstart_data = []
-    e1 = 0
-    e2 = 0
-    e3 = 0
-    e4 = 0
-    e5 = 0
-    n1 = 0
-    n0 = 0
-    for key in appoint_queue.keys():
-        for log in appoint_queue[key]:
-            user_id = key
-            # print key
-            sch_id = log[0]
-            store_id = log[1]
-            start_time = log[2]
-            end_time  = log[3]
-            class_id = log[4]
-            # class_pro = class_property[class_map1[class_id]]
-            status = log[5]
-            if schedule.has_key(sch_id):
-                coach_id = schedule[sch_id]
-            else:
-                e1 += 1
-                continue
-            if user.has_key(user_id):
-                if user[user_id] == '':
-                    e2 += 1
-                    print 'user_id sex = null :', user_id
-                    user_sex = 0
-                else:
-                    user_sex = int(user[user_id])
-            else:
-                e3 += 1
-                print 'user_id miss :', user_id
-                miss_user.add(user_id)
-                user_sex = 0
-            if coach.has_key(coach_id):
-                if coach[coach_id] == '':
-                    e4 += 1
-                    print 'coach_id sex = null : ', coach_id
-                    coach_sex = 0
-                else:
-                    coach_sex = int(coach[coach_id])
-            else:
-                e5 += 1
-                print 'coach_id miss : ', coach_id
-                coach_sex = 0
-            convert_time = datetime.datetime.fromtimestamp(start_time)
-            month = convert_time.month
-            day = convert_time.day
-            key1 = (month, day)
-            tempareture_max = weather[key1][0]
-            tempareture_min = weather[key1][1]
-            is_rain = weather[key1][2]
-            weekday = datetime.datetime.isoweekday(convert_time)
-            hour = convert_time.hour
-            # minute = convert_time.minute
-            if status == 8 or status == 9:
-                each_data = [user_sex, class_id, store_id, coach_id]
-                # each_data.extend(class_pro)
-                each_data.extend([coach_sex, month, day,  weekday, hour, tempareture_max, tempareture_min, is_rain, 1])
-                n1 += 1
-            else:
-                each_data = [user_sex, class_id, store_id, coach_id]
-                # each_data.extend(class_pro)
-                each_data.extend([coach_sex, month, day,  weekday, hour, tempareture_max, tempareture_min, is_rain, 0])
-                n0 += 1
-            coldstart_data.append(each_data)
-    appoint_file.close()
-    coach_file.close()
-    user_file.close()
-    schedule_file.close()
-    weather_file.close()
-    print 'schedule id miss : ', e1
-    print 'user_id sex = null : ', e2
-    print 'user_id miss : ', len(miss_user)
-    print 'coach_id sex = null : ', e4
-    print 'coach_id miss : ', e5
-    coldstart_data = np.array(coldstart_data)
-    print 'cold start data shape : ', coldstart_data.shape
-    print 'active num : ', n1
-    print 'negative num : ', n0
-    np.save(data_path+'coldstart_data.npy', coldstart_data)
 
 
 def get_first_data():
@@ -240,9 +143,6 @@ def get_first_data():
             month = convert_time.month
             day = convert_time.day
             key1 = (month, day)
-            # tempareture_max = weather[key1][0]
-            # tempareture_min = weather[key1][1]
-            # is_rain = weather[key1][2]
             weekday = convert_time.weekday()
             weekday_sparse = np_utils.to_categorical(weekday, 7)
             # print weekday_sparse
@@ -252,16 +152,14 @@ def get_first_data():
             hour_sparse = np_utils.to_categorical(hour-7, 15)
             # dealed history data
             pressenP = getPresentP(user_id, start_time, appoint_queue)
-            # class_pressenP = getClassPresentP(class_id, start_time, appoint_queue_class)
-            # coach_pressenP = getCoachPresentP(coach_id, start_time, appoint_queue_coach)
-            class_pressenP = 0
-            coach_pressenP = 0
             average_appoint = get_sum_appoint(user_id, start_time, appoint_queue)
             last_week_times = get_lastweek_appoints(user_id,start_time,appoint_queue)
             last_timedelta = get_last_timedelta(user_id, start_time, appoint_queue)
             weekdayP = get_weekdayP(user_id, start_time, appoint_queue)
             hourP = get_hourP(user_id, start_time, appoint_queue)                #13
             coach_1 = get_history_coach(user_id, start_time, appoint_queue, schedule)
+            if len(coach_1) > padding_num:
+                coach_1 = coach_1[-padding_num:]
             if len(coach_1) <= 3:
                 continue
             coach_history = coach_1 + [0 for x in range(padding_num - len(coach_1))]
@@ -269,21 +167,29 @@ def get_first_data():
             # coach_history_weight = [math.pow(0.8, x) for x in range(len(coach_1))] + [0 for x in range(
             #     padding_num - len(coach_1))]
             store_1 = get_history_store(user_id, start_time, appoint_queue)
+            if len(store_1) > padding_num:
+                store_1 = store_1[-padding_num:]
             store_history = store_1 + [0 for x in range(padding_num - len(store_1))]
             store_history_weight = [1.0/len(store_1) for x in range(len(store_1))] + [0 for x in range(padding_num - len(store_1))]
             # store_history_weight = [math.pow(0.8, x) for x in range(len(store_1))] + [0 for x in range(
             #     padding_num - len(store_1))]
             class_1 = get_history_class(user_id, start_time, appoint_queue)
+            if len(class_1) > padding_num:
+                class_1 = class_1[-padding_num:]
             class_history = class_1 + [0 for x in range(padding_num - len(class_1))]
             class_history_weight = [1.0/len(class_1) for x in range(len(class_1))] + [0 for x in range(padding_num - len(class_1))]
             # class_history_weight = [math.pow(0.8, x) for x in range(len(class_1))] + [0 for x in range(
             #     padding_num - len(class_1))]
             hour_1 = get_history_time(user_id, start_time, appoint_queue)
+            if len(hour_1) > padding_num:
+                hour_1 = hour_1[-padding_num:]
             hour_history = hour_1 + [0 for x in range(padding_num - len(hour_1))]
             hour_history_weight = [1.0/len(hour_1) for x in range(len(hour_1))] + [0 for x in range(padding_num - len(hour_1))]
             # hour_history_weight = [math.pow(0.8, x) for x in range(len(hour_1))] + [0 for x in
             #                                                                          range(padding_num - len(hour_1))]
             week_1 = get_history_weekday(user_id, start_time, appoint_queue)
+            if len(week_1) > padding_num:
+                week_1 = week_1[-padding_num:]
             week_history = week_1 + [0 for x in range(padding_num - len(week_1))]
             week_history_weight = [1.0/len(week_1) for x in range(len(week_1))] + [0 for x in range(padding_num - len(week_1))]
             # week_history_weight = [math.pow(0.8, x) for x in range(len(week_1))] + [0 for x in
@@ -291,9 +197,6 @@ def get_first_data():
             if pressenP == -1 or average_appoint == -1 or last_timedelta == -1:
                 continue
             # minute = convert_time.minute
-            if t1%1000 == 0:
-                print t1
-            t1 += 1
             each_data = [user_sex, pressenP, average_appoint, last_timedelta, last_week_times]
             each_data.extend(coach_history)
             each_data.extend(coach_history_weight)
@@ -304,16 +207,16 @@ def get_first_data():
             each_data.extend(hour_history)
             each_data.extend(hour_history_weight)
             each_data.extend(week_history)
-            each_data.extend(week_history_weight)
-            each_data.extend(weekdayP)
-            each_data.extend(hourP)
-            each_data.extend([class_id_map, store_id, coach_id])
+            each_data.extend(week_history_weight) # 1005
+            each_data.extend(weekdayP)       #1012
+            each_data.extend(hourP)          #1027
+            each_data.extend([class_id_map, store_id, coach_id])   #1030
             # each_data.extend(class_pro)   # 30
             # each_data.extend([coach_sex, month, day,  weekday, hour, tempareture_max, tempareture_min, is_rain, 1])
-            each_data.extend([coach_sex, month, day])
+            each_data.extend([coach_sex, month, day])    #1033
             # print weekday_sparse
-            each_data.extend(weekday_sparse)  # 7
-            each_data.extend(hour_sparse)  # 15
+            each_data.extend(weekday_sparse)  # 7    1040
+            each_data.extend(hour_sparse)  # 15   1055
             # each_data.extend([tempareture_max, tempareture_min, is_rain, 1])
             if status == 8 or status == 9:
                 each_data.extend([1])
@@ -323,18 +226,20 @@ def get_first_data():
                 n0 += 1
             else:
                 continue
-
+            if len(each_data) != 1056:
+                print 'wrong length: ', len(each_data)
+                continue
             first_data.append(each_data)
+            if t1%5000 == 0:
+                print t1
+            t1 += 1
 
     appoint_file.close()
     coach_file.close()
     user_file.close()
     schedule_file.close()
+    # print 'first data shape : ', len(first_data), 'weidu: ', len(first_data[0])
     first_data = np.array(first_data)
-    #all_user_file = open(data_path+'all_userid', 'w')
-    #pickle.dump(all_users, all_user_file)
-    all_coaches_file = open(data_path + 'all_coachids', 'w')
-    pickle.dump(all_coaches, all_coaches_file)
     print 'all data shape : ', first_data.shape
     print 'active num : ', n1
     print 'negative num : ', n0
@@ -343,10 +248,10 @@ def get_first_data():
     print 'all users number: ', len(all_users)
     print 'all coaches number: ', len(all_coaches)
     np.save(data_path+'first_type_data.npy', first_data)
+    all_coaches_file = open(data_path + 'all_coachids', 'w')
+    pickle.dump(all_coaches, all_coaches_file)
     print 'get user right from web...'
     userReal = get_user_right(all_users)
-   # userReal_file = open(data_path+'all_userid', 'r')
-   # userReal = pickle.load(userReal_file) 
     print 'get user right success...'
     print 'get user history by now start...'
     user_history_bynow = {}
@@ -354,7 +259,7 @@ def get_first_data():
     l1 = len(userReal)
     for uId in userReal:
         if k%1000==0:
-            print k,' / ', l1
+            print k, ' / ', l1
         k += 1
         uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
         user_history_bynow[uId]=uHis

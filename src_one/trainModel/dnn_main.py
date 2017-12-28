@@ -86,6 +86,8 @@ def train_model():
     # ================ train_test_split =======================================================
     x_data = np.load(data_path+first_type_data_name)
     arr_num = x_data.shape[0]
+    # print x_data.size
+    # x_data = x_data.reshape((arr_num, arr_wei))
     train_data, train_label, test_data, test_label = train_test_split(x_data, arr_num)
     logging.info( 'train_data :'+str(train_data.shape))
     logging.info( 'train_label :'+str(train_label.shape))
@@ -100,6 +102,7 @@ def train_model():
     score = model.evaluate(get_data_batch(test_data), test_label, batch_size=500)
     print model.metrics_names
     print score
+    logging.info('score'+str(score))
 
 
 def predict():

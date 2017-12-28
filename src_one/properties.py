@@ -19,7 +19,7 @@ slotPort = 3306
 slotDatabase = 'brave'
 
 # cities
-cities = (12597, 10809, 19281)
+cities = (12597, 10809, 19281, 2,10544)
 
 # train data time block (read_data_from_database)
 start_year = 2017

@@ -1,5 +1,4 @@
 import logging
-
 import sqlalchemy
 from new_database import Slot, Candidate, Course
 import cPickle as pickle
@@ -105,7 +104,9 @@ def get_course():
         all_coures.append(key.id)
     courses_file = open(data_path+'courses', 'w')
     pickle.dump(all_coures, courses_file)
-    # print len(all_coures)
+    # print 'All course id number: ', len(all_coures)
+    num = len(all_coures)
+    logging.info('All course id number: '+str(num))
     print 'get courses success'
     courses_file.close()
     session.close()
