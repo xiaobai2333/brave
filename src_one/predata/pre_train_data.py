@@ -251,22 +251,22 @@ def get_first_data():
     all_coaches_file = open(data_path + 'all_coachids', 'w')
     pickle.dump(all_coaches, all_coaches_file)
     print 'get user right from web...'
-    # userReal = get_user_right(all_users)
-    # print 'get user right success...'
-    # print 'get user history by now start...'
-    # user_history_bynow = {}
-    # k = 0
-    # l1 = len(userReal)
-    # for uId in userReal:
-    #     if k%1000==0:
-    #         print k, ' / ', l1
-    #     k += 1
-    #     uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
-    #     user_history_bynow[uId]=uHis
-    # user_history_bynow_file = open(data_path+'user_history_by_now', 'w')
-    # pickle.dump(user_history_bynow, user_history_bynow_file)
-    # user_history_bynow_file.close()
-    # print 'get user history by now ...'
+    userReal = get_user_right(all_users)
+    print 'get user right success...'
+    print 'get user history by now start...'
+    user_history_bynow = {}
+    k = 0
+    l1 = len(userReal)
+    for uId in userReal:
+        if k%1000==0:
+            print k, ' / ', l1
+        k += 1
+        uHis = get_user_history_bynow(uId, appoint_queue, user, coach, schedule)
+        user_history_bynow[uId]=uHis
+    user_history_bynow_file = open(data_path+'user_history_by_now', 'w')
+    pickle.dump(user_history_bynow, user_history_bynow_file)
+    user_history_bynow_file.close()
+    print 'get user history by now ...'
 
 
 def get_user_history_bynow(userId, appointMap, user, coach, schedule):
