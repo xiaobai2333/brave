@@ -158,6 +158,8 @@ def get_first_data():
             weekdayP = get_weekdayP(user_id, start_time, appoint_queue)
             hourP = get_hourP(user_id, start_time, appoint_queue)                #13
             coach_1 = get_history_coach(user_id, start_time, appoint_queue, schedule)
+            if len(coach_1) > padding_num:
+                coach_1 = coach_1[-padding_num:]
             if len(coach_1) <= 3:
                 continue
             coach_history = coach_1 + [0 for x in range(padding_num - len(coach_1))]
@@ -165,21 +167,29 @@ def get_first_data():
             # coach_history_weight = [math.pow(0.8, x) for x in range(len(coach_1))] + [0 for x in range(
             #     padding_num - len(coach_1))]
             store_1 = get_history_store(user_id, start_time, appoint_queue)
+            if len(store_1) > padding_num:
+                store_1 = store_1[-padding_num:]
             store_history = store_1 + [0 for x in range(padding_num - len(store_1))]
             store_history_weight = [1.0/len(store_1) for x in range(len(store_1))] + [0 for x in range(padding_num - len(store_1))]
             # store_history_weight = [math.pow(0.8, x) for x in range(len(store_1))] + [0 for x in range(
             #     padding_num - len(store_1))]
             class_1 = get_history_class(user_id, start_time, appoint_queue)
+            if len(class_1) > padding_num:
+                class_1 = class_1[-padding_num:]
             class_history = class_1 + [0 for x in range(padding_num - len(class_1))]
             class_history_weight = [1.0/len(class_1) for x in range(len(class_1))] + [0 for x in range(padding_num - len(class_1))]
             # class_history_weight = [math.pow(0.8, x) for x in range(len(class_1))] + [0 for x in range(
             #     padding_num - len(class_1))]
             hour_1 = get_history_time(user_id, start_time, appoint_queue)
+            if len(hour_1) > padding_num:
+                hour_1 = hour_1[-padding_num:]
             hour_history = hour_1 + [0 for x in range(padding_num - len(hour_1))]
             hour_history_weight = [1.0/len(hour_1) for x in range(len(hour_1))] + [0 for x in range(padding_num - len(hour_1))]
             # hour_history_weight = [math.pow(0.8, x) for x in range(len(hour_1))] + [0 for x in
             #                                                                          range(padding_num - len(hour_1))]
             week_1 = get_history_weekday(user_id, start_time, appoint_queue)
+            if len(week_1) > padding_num:
+                week_1 = week_1[-padding_num:]
             week_history = week_1 + [0 for x in range(padding_num - len(week_1))]
             week_history_weight = [1.0/len(week_1) for x in range(len(week_1))] + [0 for x in range(padding_num - len(week_1))]
             # week_history_weight = [math.pow(0.8, x) for x in range(len(week_1))] + [0 for x in
@@ -197,16 +207,16 @@ def get_first_data():
             each_data.extend(hour_history)
             each_data.extend(hour_history_weight)
             each_data.extend(week_history)
-            each_data.extend(week_history_weight)
-            each_data.extend(weekdayP)
-            each_data.extend(hourP)
-            each_data.extend([class_id_map, store_id, coach_id])
+            each_data.extend(week_history_weight) # 1005
+            each_data.extend(weekdayP)       #1012
+            each_data.extend(hourP)          #1027
+            each_data.extend([class_id_map, store_id, coach_id])   #1030
             # each_data.extend(class_pro)   # 30
             # each_data.extend([coach_sex, month, day,  weekday, hour, tempareture_max, tempareture_min, is_rain, 1])
-            each_data.extend([coach_sex, month, day])
+            each_data.extend([coach_sex, month, day])    #1033
             # print weekday_sparse
-            each_data.extend(weekday_sparse)  # 7
-            each_data.extend(hour_sparse)  # 15
+            each_data.extend(weekday_sparse)  # 7    1040
+            each_data.extend(hour_sparse)  # 15   1055
             # each_data.extend([tempareture_max, tempareture_min, is_rain, 1])
             if status == 8 or status == 9:
                 each_data.extend([1])
@@ -220,7 +230,7 @@ def get_first_data():
                 print 'wrong length: ', len(each_data)
                 continue
             first_data.append(each_data)
-            if t1%1000 == 0:
+            if t1%5000 == 0:
                 print t1
             t1 += 1
 
@@ -228,7 +238,7 @@ def get_first_data():
     coach_file.close()
     user_file.close()
     schedule_file.close()
-    print 'first data shape : ', len(first_data), 'weidu: ', len(first_data[0])
+    # print 'first data shape : ', len(first_data), 'weidu: ', len(first_data[0])
     first_data = np.array(first_data)
     print 'all data shape : ', first_data.shape
     print 'active num : ', n1
