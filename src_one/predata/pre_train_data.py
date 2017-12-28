@@ -229,16 +229,15 @@ def get_first_data():
                 print 'each data shape : ', len(each_data)
                 print 'first data shape : ', len(first_data), 'weidu: ', len(first_data[0])
             t1 += 1
+        if t1 >= 10000:
+            break;
 
     appoint_file.close()
     coach_file.close()
     user_file.close()
     schedule_file.close()
+    print 'first data shape : ', len(first_data), 'weidu: ', len(first_data[0])
     first_data = np.array(first_data)
-    #all_user_file = open(data_path+'all_userid', 'w')
-    #pickle.dump(all_users, all_user_file)
-    all_coaches_file = open(data_path + 'all_coachids', 'w')
-    pickle.dump(all_coaches, all_coaches_file)
     print 'all data shape : ', first_data.shape
     print 'active num : ', n1
     print 'negative num : ', n0
@@ -247,6 +246,8 @@ def get_first_data():
     print 'all users number: ', len(all_users)
     print 'all coaches number: ', len(all_coaches)
     np.save(data_path+'first_type_data.npy', first_data)
+    all_coaches_file = open(data_path + 'all_coachids', 'w')
+    pickle.dump(all_coaches, all_coaches_file)
     print 'get user right from web...'
     # userReal = get_user_right(all_users)
     # print 'get user right success...'
